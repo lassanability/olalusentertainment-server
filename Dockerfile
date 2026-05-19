@@ -16,6 +16,6 @@ COPY . .
 RUN chown -R appuser:appgroup /app
 USER appuser
 
-EXPOSE 1500
+EXPOSE 1700
 
 CMD ["dumb-init", "node", "app.js"]
