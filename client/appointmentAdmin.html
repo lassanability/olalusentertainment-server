@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Appointment Request — Olalus Entertainment</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background-color: #f5f6f8; margin: 0; padding: 20px; }
+  .container { max-width: 600px; margin: 0 auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
+  .header { padding: 30px 25px; text-align: center; background-color: #111827; border-bottom: 3px solid #d19e1d; }
+  .logo { width: 110px; height: auto; display: block; margin: 0 auto 12px; }
+  .tagline { color: #ffd86e; font-size: 11px; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; }
+  .content { padding: 36px 35px; background-color: #ffffff; }
+  h2 { color: #111827; margin: 0 0 20px; font-size: 22px; font-weight: 700; }
+  p { line-height: 1.7; color: #374151; margin: 14px 0; font-size: 15px; }
+  .type-badge { display: inline-block; background: linear-gradient(120deg, #d19e1d, #ffd86e); color: #111827; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; margin: 0 0 20px; }
+  .info-box { background-color: #f9fafb; border-radius: 8px; padding: 22px 24px; margin: 22px 0; }
+  .info-row { padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { color: #6b7280; font-size: 13px; font-weight: 600; display: inline-block; min-width: 120px; vertical-align: top; }
+  .info-value { color: #111827; font-size: 14px; font-weight: 500; display: inline-block; }
+  .message-box { background-color: #fff8e1; border-left: 4px solid #d19e1d; border-radius: 8px; padding: 22px 24px; margin: 22px 0; }
+  .message-box h3 { color: #111827; margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+  .message-box p { margin: 0; color: #374151; white-space: pre-wrap; word-break: break-word; font-size: 14px; }
+  .divider { height: 2px; background: linear-gradient(90deg, transparent, #d19e1d, transparent); margin: 20px 0; }
+  .footer { padding: 24px 25px; background-color: #f5f6f8; text-align: center; border-top: 1px solid #e5e7eb; }
+  .footer p { color: #6b7280; font-size: 12px; margin: 5px 0; }
+  .footer a { color: #d19e1d; text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://olalusentertainment.com/assets/logo.png" alt="Olalus Entertainment" class="logo">
+      <p class="tagline">Admin Notification</p>
+    </div>
+    <div class="content">
+      <h2>New {{type}} Request</h2>
+      <p>A new {{type}} request has been submitted on the Olalus Entertainment website.</p>
+      <div class="type-badge">{{type}}</div>
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">Full Name:</span>
+          <span class="info-value">{{firstName}} {{lastName}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Email:</span>
+          <span class="info-value"><a href="mailto:{{email}}" style="color: #d19e1d;">{{email}}</a></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Phone:</span>
+          <span class="info-value">{{phone}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Service:</span>
+          <span class="info-value">{{serviceType}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Requested Date:</span>
+          <span class="info-value">{{dateTime}}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Submitted:</span>
+          <span class="info-value">{{date}}</span>
+        </div>
+      </div>
+      <div class="message-box">
+        <h3>Client Message:</h3>
+        <p>{{message}}</p>
+      </div>
+      <p style="color: #6b7280; font-size: 13px;">This is an automated notification from the Olalus Entertainment booking system.</p>
+    </div>
+    <div class="footer">
+      <div class="divider"></div>
+      <p>&copy; 2026 Olalus Entertainment. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Your Email — Olalus Entertainment</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background-color: #f5f6f8; margin: 0; padding: 20px; }
+  .container { max-width: 600px; margin: 0 auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
+  .header { padding: 30px 25px; text-align: center; background-color: #111827; border-bottom: 3px solid #d19e1d; }
+  .logo { width: 110px; height: auto; display: block; margin: 0 auto 12px; }
+  .tagline { color: #ffd86e; font-size: 11px; letter-spacing: 1.5px; margin: 0; text-transform: uppercase; }
+  .content { padding: 36px 35px; background-color: #ffffff; }
+  h2 { color: #111827; margin: 0 0 20px; font-size: 22px; font-weight: 700; }
+  p { line-height: 1.7; color: #374151; margin: 14px 0; font-size: 15px; }
+  .code-box { background-color: #fff8e1; border-radius: 10px; padding: 30px; margin: 28px 0; text-align: center; border: 2px solid #d19e1d; }
+  .code-box p { margin: 0 0 10px; color: #6b7280; font-size: 13px; }
+  .code { font-size: 36px; font-weight: 700; color: #d19e1d; letter-spacing: 10px; margin: 16px 0; padding: 16px 24px; background-color: #ffffff; border-radius: 8px; display: inline-block; font-family: 'Courier New', monospace; border: 1px solid #e5e7eb; }
+  .warning-box { background-color: #fff8e1; border-left: 4px solid #d19e1d; border-radius: 8px; padding: 18px 22px; margin: 22px 0; }
+  .warning-box p { margin: 4px 0; color: #111827; font-size: 14px; }
+  .divider { height: 2px; background: linear-gradient(90deg, transparent, #d19e1d, transparent); margin: 20px 0; }
+  .footer { padding: 24px 25px; background-color: #f5f6f8; text-align: center; border-top: 1px solid #e5e7eb; }
+  .footer p { color: #6b7280; font-size: 12px; margin: 5px 0; }
+  .footer a { color: #d19e1d; text-decoration: none; }
+  .social-links { margin: 14px 0; }
+  .social-link { display: inline-block; margin: 0 8px; color: #d19e1d; font-size: 12px; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="https://olalusentertainment.com/assets/logo.png" alt="Olalus Entertainment" class="logo">
+      <p class="tagline">Creating Unforgettable Moments</p>
+    </div>
+    <div class="content">
+      <h2>Verify Your Email</h2>
+      <p>Hi {{username}},</p>
+      <p>To complete your registration with Olalus Entertainment, please use the verification code below:</p>
+      <div class="code-box">
+        <p>Your Verification Code</p>
+        <div class="code">{{verificationCode}}</div>
+        <p style="margin-top: 10px; font-size: 13px; color: #6b7280;">Enter this code to confirm your email address</p>
+      </div>
+      <div class="warning-box">
+        <p><strong>This code expires in 1 hour.</strong></p>
+        <p>If you did not create an Olalus Entertainment account, please disregard this email.</p>
+      </div>
+      <p>For your security, never share this code with anyone. Our team will never ask for your verification code.</p>
+    </div>
+    <div class="footer">
+      <div class="social-links">
+        <a href="https://www.facebook.com/olalusentertainment" class="social-link">Facebook</a>
+        <a href="https://twitter.com/olalusentertainment" class="social-link">Twitter</a>
+        <a href="https://www.linkedin.com/company/olalusentertainment" class="social-link">LinkedIn</a>
+        <a href="https://www.youtube.com/@olalusentertainment" class="social-link">YouTube</a>
+      </div>
+      <div class="divider"></div>
+      <p>Email: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+      <p>&copy; 2026 Olalus Entertainment. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
