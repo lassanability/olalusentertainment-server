@@ -181,7 +181,7 @@ exports.submitListing = async (req, res) => {
       published: false,
     });
 
-    const { result } = await squareClient.checkoutApi.createPaymentLink({
+    const { data } = await squareClient.checkout.paymentLinks.create({
       idempotencyKey: randomUUID(),
       order: {
         locationId: process.env.SQUARE_LOCATION_ID,
@@ -201,10 +201,10 @@ exports.submitListing = async (req, res) => {
       },
     });
 
-    const checkoutUrl = result.paymentLink?.url;
+    const checkoutUrl = data.paymentLink?.url;
     if (!checkoutUrl) throw new Error('Failed to create payment link');
 
-    await Event.findByIdAndUpdate(event._id, { listingPaymentId: result.paymentLink.id });
+    await Event.findByIdAndUpdate(event._id, { listingPaymentId: data.paymentLink.id });
     res.json({ success: true, checkoutUrl, eventId: event._id });
   } catch (err) {
     console.error('[!] Listing submission error:', err);

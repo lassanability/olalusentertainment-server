@@ -1,13 +1,13 @@
-const { Client, Environment } = require('square');
+const { SquareClient, SquareEnvironment } = require('square');
 
 BigInt.prototype.toJSON = function () { return this.toString(); };
 
-const client = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
+const client = new SquareClient({
+  token: process.env.SQUARE_ACCESS_TOKEN,
   environment:
     process.env.SQUARE_ENVIRONMENT === 'production'
-      ? Environment.Production
-      : Environment.Sandbox,
+      ? SquareEnvironment.Production
+      : SquareEnvironment.Sandbox,
 });
 
 module.exports = client;
