@@ -35,14 +35,87 @@ exports.getQrImage = async (req, res) => {
   }
 };
 
+exports.getPublicTicket = async (req, res) => {
+  try {
+    const ticket = await IssuedTicket.findOne({ ticketId: req.params.ticketId })
+      .populate('eventId', 'title startDateTime venue city state image category');
+    if (!ticket) return res.status(404).json({ success: false, message: 'Ticket not found' });
+    res.json({
+      success: true,
+      ticket: {
+        ticketId: ticket.ticketId,
+        eventName: ticket.eventName,
+        buyerName: ticket.buyerName,
+        ticketTypeName: ticket.ticketTypeName,
+        status: ticket.status,
+        issuedAt: ticket.issuedAt,
+        scannedAt: ticket.scannedAt,
+        event: ticket.eventId,
+      },
+    });
+  } catch {
+    res.status(500).json({ success: false, message: 'Failed to fetch ticket' });
+  }
+};
+
 exports.getTicket = async (req, res) => {
   try {
     const ticket = await IssuedTicket.findOne({ ticketId: req.params.ticketId })
-      .populate('eventId', 'title startDateTime venue city state image');
+      .populate('eventId', 'title startDateTime venue city state');
     if (!ticket) return res.status(404).json({ success: false, message: 'Ticket not found' });
-    res.json({ success: true, ticket });
+    res.json({
+      success: true,
+      ticket: {
+        ticketId: ticket.ticketId,
+        status: ticket.status,
+        eventName: ticket.eventName,
+        buyerName: ticket.buyerName,
+        buyerEmail: ticket.buyerEmail,
+        ticketTypeName: ticket.ticketTypeName,
+        orderId: ticket.orderId,
+        issuedAt: ticket.issuedAt,
+        scannedAt: ticket.scannedAt,
+        scannedBy: ticket.scannedBy,
+        event: ticket.eventId,
+      },
+    });
   } catch {
     res.status(500).json({ success: false, message: 'Failed to fetch ticket' });
+  }
+};
+
+exports.voidTicket = async (req, res) => {
+  try {
+    const ticket = await IssuedTicket.findOne({ ticketId: req.params.ticketId });
+    if (!ticket) return res.status(404).json({ success: false, message: 'Ticket not found' });
+    if (ticket.status === 'used') {
+      return res.status(409).json({ success: false, message: 'Cannot void a ticket that has already been used' });
+    }
+    if (ticket.status === 'voided') {
+      return res.status(409).json({ success: false, message: 'Ticket is already voided' });
+    }
+    ticket.status = 'voided';
+    ticket.scannedAt = new Date();
+    ticket.scannedBy = req.admin?.email || req.admin?.name || 'scanner';
+    await ticket.save();
+    res.json({
+      success: true,
+      message: 'Ticket voided successfully',
+      ticket: {
+        ticketId: ticket.ticketId,
+        status: ticket.status,
+        eventName: ticket.eventName,
+        buyerName: ticket.buyerName,
+        buyerEmail: ticket.buyerEmail,
+        ticketTypeName: ticket.ticketTypeName,
+        orderId: ticket.orderId,
+        issuedAt: ticket.issuedAt,
+        scannedAt: ticket.scannedAt,
+        scannedBy: ticket.scannedBy,
+      },
+    });
+  } catch {
+    res.status(500).json({ success: false, message: 'Failed to void ticket' });
   }
 };
 
