@@ -140,7 +140,7 @@ exports.toggleFeatured = async (req, res) => {
 
 exports.submitListing = async (req, res) => {
   try {
-    const { title, description, category, startDateTime, venue, address, city, state, posterName, posterEmail } = req.body;
+    const { title, description, category, startDateTime, venue, address, city, state, posterName, posterEmail, ticketTypes: rawTicketTypes } = req.body;
     if (!title?.trim() || !description?.trim() || !posterEmail?.trim() || !startDateTime) {
       return res.status(400).json({ success: false, message: 'Title, description, email, and date are required' });
     }
@@ -155,6 +155,13 @@ exports.submitListing = async (req, res) => {
 
     const settings = await AppSettings.findOne();
     const listingFee = settings?.listingFee ?? 20000;
+
+    let ticketTypes = [];
+    if (rawTicketTypes) {
+      try {
+        ticketTypes = JSON.parse(rawTicketTypes);
+      } catch { /* ignore malformed */ }
+    }
 
     const event = await Event.create({
       title: title.trim(),
@@ -171,6 +178,7 @@ exports.submitListing = async (req, res) => {
       posterEmail: posterEmail.trim(),
       listingFee,
       listingPaid: false,
+      ticketTypes,
     });
 
     const { data } = await squareClient.checkout.paymentLinks.create({
@@ -181,7 +189,7 @@ exports.submitListing = async (req, res) => {
         lineItems: [{
           name: 'Event Listing Fee',
           quantity: '1',
-          basePriceMoney: { amount: listingFee, currency: 'USD' },
+          basePriceMoney: { amount: BigInt(listingFee), currency: 'USD' },
         }],
       },
       checkoutOptions: {
