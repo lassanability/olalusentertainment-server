@@ -42,7 +42,7 @@ exports.processPayment = async (req, res) => {
       status: 'pending',
     });
 
-    const { data } = await squareClient.payments.create({
+    const response = await squareClient.payments.create({
       sourceId,
       idempotencyKey: randomUUID(),
       amountMoney: { amount: BigInt(Math.round(amount)), currency: 'USD' },
@@ -52,7 +52,7 @@ exports.processPayment = async (req, res) => {
       buyerEmailAddress: buyerEmail,
     });
 
-    const payment = data.payment;
+    const payment = response.payment;
 
     await Order.findOneAndUpdate(
       { orderId: order.orderId },
