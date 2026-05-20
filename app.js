@@ -27,7 +27,6 @@ const adminUserRoute = require("./routes/adminUser");
 const commentRoute = require("./routes/comment");
 const logRoute = require("./routes/log");
 const bannerRoute = require("./routes/banner");
-const partnerRoute = require("./routes/partner");
 const faqRoute = require("./routes/faq");
 const blogRoute = require("./routes/blog");
 const contactRoute = require("./routes/contact");
@@ -65,7 +64,6 @@ app.use("/api/v1/admin-users", adminUserRoute);
 app.use("/api/v1/logs", logRoute);
 
 app.use("/api/v1/banner", bannerRoute);
-app.use("/api/v1/partners", partnerRoute);
 app.use("/api/v1/faq", faqRoute);
 app.use("/api/v1/blog", blogRoute);
 app.use("/api/v1/contact", contactRoute);

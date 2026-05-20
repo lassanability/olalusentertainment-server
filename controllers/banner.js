@@ -7,38 +7,11 @@ const getImageUrl = (key) => {
   return `${process.env.SEAWEED_S3_URL}/${process.env.SEAWEED_BUCKET}/${key}`;
 };
 
-exports.getAll = async (req, res) => {
+exports.get = async (req, res) => {
   try {
-    const banners = await Banner.find().sort({ createdAt: -1 });
-    res.json({ success: true, data: banners });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
-
-exports.getById = async (req, res) => {
-  try {
-    const banner = await Banner.findById(req.params.id);
-    if (!banner) return res.status(404).json({ success: false, message: 'Banner not found' });
-    res.json({ success: true, data: banner });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
-
-exports.create = async (req, res) => {
-  try {
-    const { title, description, active } = req.body;
-    let imageUrl = '';
-
-    if (req.file) {
-      const key = `banners/${Date.now()}-${req.file.originalname.replace(/\s+/g, '-')}`;
-      await storage.uploadFile(req.file.buffer, key, req.file.mimetype);
-      imageUrl = getImageUrl(key);
-    }
-
-    const banner = await Banner.create({ title, description, image: imageUrl, active });
-    res.status(201).json({ success: true, data: banner });
+    let home = await Banner.findOne();
+    if (!home) home = await Banner.create({});
+    res.json({ success: true, data: home });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -46,32 +19,34 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const banner = await Banner.findById(req.params.id);
-    if (!banner) return res.status(404).json({ success: false, message: 'Banner not found' });
+    let home = await Banner.findOne();
+    if (!home) home = new Banner();
 
-    const { title, description, active } = req.body;
-    if (title !== undefined) banner.title = title;
-    if (description !== undefined) banner.description = description;
-    if (active !== undefined) banner.active = active === 'true' || active === true;
+    const { title, description, tagline, statsEventsCount, statsEventsLabel, statsTicketsCount, statsTicketsLabel } = req.body;
+    if (title !== undefined) home.title = title;
+    if (description !== undefined) home.description = description;
+    if (tagline !== undefined) home.tagline = tagline;
+    if (statsEventsCount !== undefined) home.statsEventsCount = statsEventsCount;
+    if (statsEventsLabel !== undefined) home.statsEventsLabel = statsEventsLabel;
+    if (statsTicketsCount !== undefined) home.statsTicketsCount = statsTicketsCount;
+    if (statsTicketsLabel !== undefined) home.statsTicketsLabel = statsTicketsLabel;
 
-    if (req.file) {
-      const key = `banners/${Date.now()}-${req.file.originalname.replace(/\s+/g, '-')}`;
-      await storage.uploadFile(req.file.buffer, key, req.file.mimetype);
-      banner.image = getImageUrl(key);
+    const files = req.files || {};
+    if (files.heroImage?.[0]) {
+      const f = files.heroImage[0];
+      const key = `home/${Date.now()}-hero-${f.originalname.replace(/\s+/g, '-')}`;
+      await storage.uploadFile(f.buffer, key, f.mimetype);
+      home.heroImage = getImageUrl(key);
+    }
+    if (files.blobImage?.[0]) {
+      const f = files.blobImage[0];
+      const key = `home/${Date.now()}-blob-${f.originalname.replace(/\s+/g, '-')}`;
+      await storage.uploadFile(f.buffer, key, f.mimetype);
+      home.blobImage = getImageUrl(key);
     }
 
-    await banner.save();
-    res.json({ success: true, data: banner });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
-
-exports.remove = async (req, res) => {
-  try {
-    const banner = await Banner.findByIdAndDelete(req.params.id);
-    if (!banner) return res.status(404).json({ success: false, message: 'Banner not found' });
-    res.json({ success: true, message: 'Banner deleted' });
+    await home.save();
+    res.json({ success: true, data: home });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

@@ -11,10 +11,10 @@ exports.get = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const { phone, fax, email, address, workingDays, workingHours } = req.body;
+    const { phone, email, address, location, instagramUrl, twitterUrl, facebookUrl, tiktokUrl, youtubeUrl } = req.body;
     const info = await ContactInfo.findOneAndUpdate(
       {},
-      { phone, fax, email, address, workingDays, workingHours },
+      { phone, email, address, location, instagramUrl, twitterUrl, facebookUrl, tiktokUrl, youtubeUrl },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
     res.json({ success: true, data: info });

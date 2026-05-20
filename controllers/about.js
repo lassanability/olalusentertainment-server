@@ -22,8 +22,8 @@ exports.update = async (req, res) => {
     let about = await About.findOne();
     if (!about) about = new About();
 
-    const { introParagraph } = req.body;
-
+    const { title, introParagraph } = req.body;
+    if (title !== undefined) about.title = title;
     if (introParagraph !== undefined) about.introParagraph = introParagraph;
 
     if (req.file) {

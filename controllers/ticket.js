@@ -1,6 +1,27 @@
 const QRCode = require('qrcode');
 const IssuedTicket = require('../models/IssuedTicket');
 
+exports.getAllTickets = async (req, res) => {
+  try {
+    const { from, to, event } = req.query;
+    const filter = {};
+    if (from || to) {
+      filter.issuedAt = {};
+      if (from) filter.issuedAt.$gte = new Date(from);
+      if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        filter.issuedAt.$lte = toDate;
+      }
+    }
+    if (event) filter.eventName = { $regex: event, $options: 'i' };
+    const tickets = await IssuedTicket.find(filter).sort({ issuedAt: -1 });
+    res.json({ success: true, tickets });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 exports.getQrImage = async (req, res) => {
   try {
     const ticket = await IssuedTicket.findOne({ ticketId: req.params.ticketId }).select('ticketId');

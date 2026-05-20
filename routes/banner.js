@@ -5,10 +5,10 @@ const ctrl = require('../controllers/banner');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
-router.get('/', ctrl.getAll);
-router.get('/:id', ctrl.getById);
-router.post('/', requireAuth, requireRole('banner'), upload.single('image'), ctrl.create);
-router.put('/:id', requireAuth, requireRole('banner'), upload.single('image'), ctrl.update);
-router.delete('/:id', requireAuth, requireRole('banner'), ctrl.remove);
+router.get('/', ctrl.get);
+router.put('/', requireAuth, requireRole('banner'), upload.fields([
+  { name: 'heroImage', maxCount: 1 },
+  { name: 'blobImage', maxCount: 1 },
+]), ctrl.update);
 
 module.exports = router;
