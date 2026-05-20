@@ -47,6 +47,8 @@ exports.getFeatured = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const data = { ...req.body };
+    data.published = true;
+    data.postedBy = 'admin';
     if (data.ticketTypes && typeof data.ticketTypes === 'string') {
       data.ticketTypes = JSON.parse(data.ticketTypes);
     }
