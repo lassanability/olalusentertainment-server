@@ -159,6 +159,26 @@ class StorageService {
     }
   }
 
+  async uploadFileFromPath(filePath, objectName, contentType) {
+    try {
+      const { size } = fs.statSync(filePath);
+      const stream = fs.createReadStream(filePath);
+      await this.s3.send(
+        new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: objectName,
+          Body: stream,
+          ContentType: contentType,
+          ContentLength: size,
+        })
+      );
+      return objectName;
+    } catch (error) {
+      console.error('Error uploading file from path:', error);
+      throw error;
+    }
+  }
+
   async uploadBannerImage(buffer, filename) {
     try {
       const objectName = `banners/${Date.now()}-${filename}`;
