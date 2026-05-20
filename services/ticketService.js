@@ -1,18 +1,34 @@
-const nodemailer = require('nodemailer');
+const { ClientSecretCredential } = require('@azure/identity');
+const { Client } = require('@microsoft/microsoft-graph-client');
+const { TokenCredentialAuthenticationProvider } = require('@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials');
 const QRCode = require('qrcode');
 const Order = require('../models/Order');
 const IssuedTicket = require('../models/IssuedTicket');
 
-const sendEmail = async ({ to, subject, html }) => {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT),
-    secure: false,
-    requireTLS: true,
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-    tls: { rejectUnauthorized: false },
+const EMAIL_FROM = process.env.EMAIL_FROM || 'info@olalusentertainment.com';
+
+const getGraphClient = () => {
+  const credential = new ClientSecretCredential(
+    process.env.AZURE_TENANT_ID,
+    process.env.AZURE_CLIENT_ID,
+    process.env.AZURE_CLIENT_SECRET,
+  );
+  const authProvider = new TokenCredentialAuthenticationProvider(credential, {
+    scopes: ['https://graph.microsoft.com/.default'],
   });
-  await transporter.sendMail({ from: `"Olalus Entertainment" <${process.env.EMAIL_USER}>`, to, subject, html });
+  return Client.initWithMiddleware({ authProvider });
+};
+
+const sendEmail = async ({ to, subject, html }) => {
+  const graphClient = getGraphClient();
+  await graphClient.api(`/users/${EMAIL_FROM}/sendMail`).post({
+    message: {
+      subject,
+      body: { contentType: 'HTML', content: html },
+      toRecipients: [{ emailAddress: { address: to } }],
+      from: { emailAddress: { address: EMAIL_FROM } },
+    },
+  });
 };
 
 const issueTickets = async (order) => {
