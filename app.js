@@ -39,6 +39,8 @@ const checkoutRoute = require("./routes/checkout");
 const webhookRoute = require("./routes/webhook");
 const ticketRoute = require("./routes/ticket");
 const testimonialRoute = require("./routes/testimonial");
+const recentShowRoute = require("./routes/recentShow");
+const appSettingsRoute = require("./routes/appSettings");
 
 connectDB().then(() => initSuperAdmin());
 
@@ -76,6 +78,8 @@ app.use("/api/v1/events", eventRoute);
 app.use("/api/v1/checkout", checkoutRoute);
 app.use("/api/v1/tickets", ticketRoute);
 app.use("/api/v1/testimonials", testimonialRoute);
+app.use("/api/v1/recent-shows", recentShowRoute);
+app.use("/api/v1/app-settings", appSettingsRoute);
 
 app.get("/", (req, res) => {
   res.status(404).json({ error: "Not Found" });

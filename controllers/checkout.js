@@ -45,7 +45,7 @@ exports.processPayment = async (req, res) => {
     const { data } = await squareClient.payments.create({
       sourceId,
       idempotencyKey: randomUUID(),
-      amountMoney: { amount: BigInt(amount), currency: 'USD' },
+      amountMoney: { amount: BigInt(Math.round(amount)), currency: 'USD' },
       locationId: process.env.SQUARE_LOCATION_ID,
       referenceId: order.orderId,
       note: `Olalus Entertainment — Order ${order.orderId}`,

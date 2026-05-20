@@ -1,5 +1,6 @@
 const { randomUUID } = require('crypto');
 const Event = require('../models/Event');
+const AppSettings = require('../models/AppSettings');
 const seaweed = require('../config/storage');
 const { logActivity } = require('../utils/logger');
 const squareClient = require('../services/squareClient');
@@ -152,6 +153,9 @@ exports.submitListing = async (req, res) => {
       imageUrl = `${process.env.SEAWEED_S3_URL}/${process.env.SEAWEED_BUCKET}/${key}`;
     }
 
+    const settings = await AppSettings.findOne();
+    const listingFee = settings?.listingFee ?? 20000;
+
     const event = await Event.create({
       title: title.trim(),
       description: description.trim(),
@@ -165,7 +169,7 @@ exports.submitListing = async (req, res) => {
       postedBy: 'user',
       posterName: posterName?.trim() || '',
       posterEmail: posterEmail.trim(),
-      listingFee: 20000,
+      listingFee,
       listingPaid: false,
     });
 
@@ -177,7 +181,7 @@ exports.submitListing = async (req, res) => {
         lineItems: [{
           name: 'Event Listing Fee',
           quantity: '1',
-          basePriceMoney: { amount: BigInt(20000), currency: 'USD' },
+          basePriceMoney: { amount: listingFee, currency: 'USD' },
         }],
       },
       checkoutOptions: {
