@@ -1,6 +1,6 @@
 const { SquareClient, SquareEnvironment } = require('square');
 
-BigInt.prototype.toJSON = function () { return this.toString(); };
+BigInt.prototype.toJSON = function () { return Number(this); };
 
 const client = new SquareClient({
   token: process.env.SQUARE_ACCESS_TOKEN,
