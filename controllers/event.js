@@ -6,7 +6,7 @@ const squareClient = require('../services/squareClient');
 
 exports.getAll = async (req, res) => {
   try {
-    const filter = { published: true };
+    const filter = { $or: [{ postedBy: 'admin' }, { postedBy: 'user', listingPaid: true }] };
     if (req.query.category) filter.category = req.query.category;
     if (req.query.status) filter.status = req.query.status;
     const events = await Event.find(filter).sort({ startDateTime: 1 });
@@ -37,7 +37,7 @@ exports.getById = async (req, res) => {
 
 exports.getFeatured = async (req, res) => {
   try {
-    const events = await Event.find({ featured: true, published: true }).sort({ startDateTime: 1 }).limit(6);
+    const events = await Event.find({ featured: true, postedBy: 'admin' }).sort({ startDateTime: 1 }).limit(6);
     res.json({ success: true, events });
   } catch {
     res.status(500).json({ success: false, message: 'Failed to fetch featured events' });
@@ -47,7 +47,6 @@ exports.getFeatured = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const data = { ...req.body };
-    data.published = true;
     data.postedBy = 'admin';
     if (data.ticketTypes && typeof data.ticketTypes === 'string') {
       data.ticketTypes = JSON.parse(data.ticketTypes);
@@ -138,18 +137,6 @@ exports.toggleFeatured = async (req, res) => {
   }
 };
 
-exports.togglePublished = async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ success: false, message: 'Event not found' });
-    event.published = !event.published;
-    await event.save();
-    res.json({ success: true, published: event.published });
-  } catch {
-    res.status(500).json({ success: false, message: 'Failed to toggle published' });
-  }
-};
-
 exports.submitListing = async (req, res) => {
   try {
     const { title, description, category, startDateTime, venue, address, city, state, posterName, posterEmail } = req.body;
@@ -180,7 +167,6 @@ exports.submitListing = async (req, res) => {
       posterEmail: posterEmail.trim(),
       listingFee: 20000,
       listingPaid: false,
-      published: false,
     });
 
     const { data } = await squareClient.checkout.paymentLinks.create({

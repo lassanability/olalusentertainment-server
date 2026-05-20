@@ -37,7 +37,6 @@ const eventSchema = new mongoose.Schema({
   listingPaid: { type: Boolean, default: false },
   listingPaymentId: { type: String },
   featured: { type: Boolean, default: false },
-  published: { type: Boolean, default: false },
   tags: [{ type: String }],
 }, { timestamps: true });
 

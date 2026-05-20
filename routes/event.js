@@ -14,6 +14,5 @@ router.post('/', requireAuth, requireRole('events'), upload.array('images', 10),
 router.put('/:id', requireAuth, requireRole('events'), upload.array('images', 10), ctrl.update);
 router.delete('/:id', requireAuth, requireRole('events'), ctrl.remove);
 router.patch('/:id/featured', requireAuth, requireRole('events'), ctrl.toggleFeatured);
-router.patch('/:id/published', requireAuth, requireRole('events'), ctrl.togglePublished);
 
 module.exports = router;

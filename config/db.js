@@ -21,13 +21,21 @@ async function deleteAllData() {
             return false;
         }
 
+        const collections = await mongoose.connection.db.listCollections().toArray();
+
+        for (const collection of collections) {
+            await mongoose.connection.db.collection(collection.name).deleteMany({});
+            console.log(`[+] Cleared collection: ${collection.name}`);
+        }
+
+        console.log('[+] All data deleted successfully');
         return true;
     } catch (err) {
-        console.log(`MongoDB deletion error: ${err.message}`);
+        console.log(`[-] MongoDB deletion error: ${err.message}`);
         return false;
     }
 }
 
 
 
-module.exports = { connectDB, deleteAllData }
+module.exports = { connectDB, deleteAllData };
