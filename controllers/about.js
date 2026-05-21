@@ -26,10 +26,18 @@ exports.update = async (req, res) => {
     if (title !== undefined) about.title = title;
     if (introParagraph !== undefined) about.introParagraph = introParagraph;
 
-    if (req.file) {
-      const key = `about/${Date.now()}-${req.file.originalname.replace(/\s+/g, '-')}`;
-      await storage.uploadFile(req.file.buffer, key, req.file.mimetype);
+    const overviewFile = req.files?.image?.[0];
+    const howToFile = req.files?.howToImage?.[0];
+
+    if (overviewFile) {
+      const key = `about/${Date.now()}-${overviewFile.originalname.replace(/\s+/g, '-')}`;
+      await storage.uploadFile(overviewFile.buffer, key, overviewFile.mimetype);
       about.overviewImage = getImageUrl(key);
+    }
+    if (howToFile) {
+      const key = `about/howto-${Date.now()}-${howToFile.originalname.replace(/\s+/g, '-')}`;
+      await storage.uploadFile(howToFile.buffer, key, howToFile.mimetype);
+      about.howToImage = getImageUrl(key);
     }
 
     await about.save();
