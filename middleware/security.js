@@ -236,7 +236,10 @@ const applySecurityMiddleware = (app) => {
   app.use(hpp({ whitelist: ['type', 'date', 'limit', 'offset', 'sort'] }));
   app.use(sanitizeInput);
   app.use(trackSuspiciousActivity);
-  app.use(requestSizeLimiter('10mb'));
+  // requestSizeLimiter is NOT applied globally — it breaks multipart/file uploads by
+  // sending 413 before the request body is drained, causing a TCP deadlock where the
+  // fetch never settles. express.json({ limit: '50mb' }) already guards JSON bodies.
+  // File upload routes use multer with per-field size limits instead.
 };
 
 module.exports = {

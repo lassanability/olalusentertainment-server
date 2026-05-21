@@ -11,6 +11,7 @@ const upload = multer({
     filename: (_req, file, cb) =>
       cb(null, `olalus-${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(file.originalname)}`),
   }),
+  limits: { fileSize: 200 * 1024 * 1024 },
 });
 
 router.get('/', ctrl.getAll);
@@ -23,5 +24,12 @@ router.put('/:id', requireAuth, requireRole('events'), upload.fields([
   { name: 'thumbnail', maxCount: 1 },
 ]), ctrl.update);
 router.delete('/:id', requireAuth, requireRole('events'), ctrl.remove);
+
+router.use((err, req, res, next) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ success: false, message: 'File too large. Maximum size is 200MB.' });
+  }
+  next(err);
+});
 
 module.exports = router;
