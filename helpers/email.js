@@ -191,19 +191,6 @@ exports.sendNewsletterEmails = async (emails, subject, message) => {
   return successfulEmails;
 };
 
-exports.sendHealthReminderEmail = async (email, username, message) => {
-  if (!email || !username) {
-    throw new Error('Email and username are required to send a health reminder email.');
-  }
-
-  return sendTemplatedEmail({
-    to: email,
-    subject: 'A Reminder from Olalus Entertainment',
-    templatePath: path.join(__dirname, '../client/remainder.html'),
-    replacements: { ...baseReplacements(), username, message },
-  });
-};
-
 exports.sendAdminEmail = async (email, username, makeAdmin) => {
   if (!email || !username) {
     throw new Error('Email and username required for admin status email');
@@ -262,81 +249,6 @@ exports.sendSubscriptionConfirmationEmail = async (email) => {
     subject: "You're Subscribed — Olalus Entertainment",
     templatePath: path.join(__dirname, '../client/subscribeConfirmation.html'),
     replacements: { ...baseReplacements(), username },
-  });
-};
-
-exports.sendJobApplicationEmail = async (email, firstName, lastName, position) => {
-  return sendTemplatedEmail({
-    to: email,
-    subject: 'Application Received — Olalus Entertainment',
-    templatePath: path.join(__dirname, '../client/jobApplication.html'),
-    replacements: { ...baseReplacements(), firstName, lastName, position },
-  });
-};
-
-exports.sendJobApplicationAdminEmail = async (data) => {
-  const { firstName, lastName, email, phone, position, message } = data;
-
-  return sendTemplatedEmail({
-    to: ADMIN_EMAIL,
-    subject: `New Job Application: ${position}`,
-    templatePath: path.join(__dirname, '../client/jobApplicationAdmin.html'),
-    replacements: {
-      ...baseReplacements(),
-      firstName,
-      lastName,
-      email,
-      phone: phone || 'Not provided',
-      position,
-      message: message || 'No message provided',
-      date: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-    },
-  });
-};
-
-exports.sendAppointmentConfirmationEmail = async (data) => {
-  const { firstName, lastName, email, serviceType, dateTime, type } = data;
-  const formattedDate = dateTime
-    ? new Date(dateTime).toLocaleString('en-US', { timeZone: 'America/New_York' })
-    : 'To be confirmed';
-
-  return sendTemplatedEmail({
-    to: email,
-    subject: `${type === 'consultation' ? 'Consultation' : 'Appointment'} Request Received — Olalus Entertainment`,
-    templatePath: path.join(__dirname, '../client/appointmentConfirmation.html'),
-    replacements: {
-      ...baseReplacements(),
-      firstName,
-      lastName,
-      serviceType: serviceType || 'General',
-      dateTime: formattedDate,
-      type: type === 'consultation' ? 'Consultation' : 'Appointment',
-    },
-  });
-};
-
-exports.sendAppointmentAdminEmail = async (data) => {
-  const { firstName, lastName, email, phone, serviceType, dateTime, message, type } = data;
-  const formattedDate = dateTime
-    ? new Date(dateTime).toLocaleString('en-US', { timeZone: 'America/New_York' })
-    : 'Not specified';
-
-  return sendTemplatedEmail({
-    to: ADMIN_EMAIL,
-    subject: `New ${type === 'consultation' ? 'Consultation' : 'Appointment'} Request: ${firstName} ${lastName}`,
-    templatePath: path.join(__dirname, '../client/appointmentAdmin.html'),
-    replacements: {
-      ...baseReplacements(),
-      firstName,
-      lastName,
-      email,
-      phone: phone || 'Not provided',
-      serviceType: serviceType || 'General',
-      dateTime: formattedDate,
-      message: message || 'No message provided',
-      type: type === 'consultation' ? 'Consultation' : 'Appointment',
-      date: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-    },
   });
 };
 
