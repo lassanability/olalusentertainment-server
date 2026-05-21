@@ -3,7 +3,7 @@ const multer = require('multer');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const ctrl = require('../controllers/banner');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 30 * 1024 * 1024 } });
 
 router.get('/', ctrl.get);
 router.put('/', requireAuth, requireRole('banner'), upload.fields([

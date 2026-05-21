@@ -3,7 +3,7 @@ const multer = require('multer');
 const { requireAuth, requireRole } = require('../middleware/auth');
 const ctrl = require('../controllers/partner');
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 30 * 1024 * 1024 } });
 
 router.get('/', ctrl.getAll);
 router.get('/:id', ctrl.getById);
