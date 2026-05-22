@@ -6,6 +6,7 @@ const ctrl = require('../controllers/event');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 30 * 1024 * 1024 } });
 
 router.get('/featured', ctrl.getFeatured);
+router.get('/past', ctrl.getPast);
 router.get('/admin', requireAuth, ctrl.getAllAdmin);
 router.post('/submit-listing', upload.single('image'), ctrl.submitListing);
 router.get('/', ctrl.getAll);

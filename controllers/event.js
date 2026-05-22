@@ -126,6 +126,19 @@ exports.remove = async (req, res) => {
   }
 };
 
+exports.getPast = async (req, res) => {
+  try {
+    const filter = {
+      startDateTime: { $lt: new Date() },
+      $or: [{ postedBy: 'admin' }, { postedBy: 'user', listingPaid: true }],
+    };
+    const events = await Event.find(filter).sort({ startDateTime: -1 });
+    res.json({ success: true, events });
+  } catch {
+    res.status(500).json({ success: false, message: 'Failed to fetch past events' });
+  }
+};
+
 exports.toggleFeatured = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
