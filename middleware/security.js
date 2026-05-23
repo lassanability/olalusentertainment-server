@@ -206,13 +206,6 @@ const parseAllowedOrigins = (website, adminDashboard) => {
   }
 };
 
-const DEV_ORIGINS = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:3001',
-];
-
 const buildCorsOptions = (website, adminDashboard) => ({
   origin: (origin, callback) => {
     let allowedOrigins;
@@ -222,10 +215,9 @@ const buildCorsOptions = (website, adminDashboard) => ({
       allowedOrigins = [website, adminDashboard].filter(Boolean);
     }
 
-    const isDev = process.env.NODE_ENV === 'development';
     const isLocalhost = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
-    if (isLocalhost || allowedOrigins.includes(origin) || (isDev && DEV_ORIGINS.includes(origin))) {
+    if (isLocalhost || allowedOrigins.includes(origin)) {
       callback(null, origin || true);
     } else {
       callback(new Error('Not allowed by CORS'));
