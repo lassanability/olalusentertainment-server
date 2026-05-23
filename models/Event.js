@@ -38,6 +38,10 @@ const eventSchema = new mongoose.Schema({
   listingPaymentId: { type: String },
   featured: { type: Boolean, default: false },
   tags: [{ type: String }],
+  ageRestriction: { type: String, trim: true, default: '' },
+  doorsOpen: { type: String, trim: true, default: '' },
+  parking: { type: String, trim: true, default: '' },
+  refundPolicy: { type: String, trim: true, default: '' },
 }, { timestamps: true });
 
 eventSchema.virtual('totalCapacity').get(function () {

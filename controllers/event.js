@@ -7,7 +7,10 @@ const squareClient = require('../services/squareClient');
 
 exports.getAll = async (req, res) => {
   try {
-    const filter = { $or: [{ postedBy: 'admin' }, { postedBy: 'user', listingPaid: true }] };
+    const filter = {
+      startDateTime: { $gte: new Date() },
+      $or: [{ postedBy: 'admin' }, { postedBy: 'user', listingPaid: true }],
+    };
     if (req.query.category) filter.category = req.query.category;
     if (req.query.status) filter.status = req.query.status;
     const events = await Event.find(filter).sort({ startDateTime: 1 });
@@ -38,7 +41,7 @@ exports.getById = async (req, res) => {
 
 exports.getFeatured = async (req, res) => {
   try {
-    const events = await Event.find({ featured: true, postedBy: 'admin' }).sort({ startDateTime: 1 }).limit(6);
+    const events = await Event.find({ featured: true, postedBy: 'admin', startDateTime: { $gte: new Date() } }).sort({ startDateTime: 1 }).limit(6);
     res.json({ success: true, events });
   } catch {
     res.status(500).json({ success: false, message: 'Failed to fetch featured events' });

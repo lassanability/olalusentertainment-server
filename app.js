@@ -4,13 +4,18 @@ app.set('trust proxy', 1);
 const cors = require("cors");
 require("dotenv").config({ path: ".env" });
 
-const REQUIRED_ENV = [
-  'PORT', 'MONGO_CONNECTION_URL',
-  'SEAWEED_S3_URL', 'SEAWEED_BUCKET', 'SEAWEED_ACCESS_KEY', 'SEAWEED_SECRET_KEY',
-  'JWT_SECRET', 'ADMIN_EMAIL',
-  'EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_USER', 'EMAIL_PASS',
-  'SQUARE_ACCESS_TOKEN', 'SQUARE_LOCATION_ID', 'SQUARE_ENVIRONMENT',
-];
+const isDev = process.env.NODE_ENV === 'development';
+
+const REQUIRED_ENV = isDev
+  ? ['PORT', 'MONGO_CONNECTION_URL', 'JWT_SECRET', 'ADMIN_EMAIL']
+  : [
+      'PORT', 'MONGO_CONNECTION_URL',
+      'SEAWEED_S3_URL', 'SEAWEED_BUCKET', 'SEAWEED_ACCESS_KEY', 'SEAWEED_SECRET_KEY',
+      'JWT_SECRET', 'ADMIN_EMAIL',
+      'EMAIL_HOST', 'EMAIL_PORT', 'EMAIL_USER', 'EMAIL_PASS',
+      'SQUARE_ACCESS_TOKEN', 'SQUARE_LOCATION_ID', 'SQUARE_ENVIRONMENT',
+    ];
+
 const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
 if (missingEnv.length > 0) {
   console.error(`[!] Missing required environment variables: ${missingEnv.join(', ')}`);
@@ -41,6 +46,7 @@ const ticketRoute = require("./routes/ticket");
 const testimonialRoute = require("./routes/testimonial");
 const recentShowRoute = require("./routes/recentShow");
 const appSettingsRoute = require("./routes/appSettings");
+const eventAlbumRoute = require("./routes/eventAlbum");
 
 connectDB().then(() => initSuperAdmin());
 
@@ -86,6 +92,7 @@ app.use("/api/v1/tickets", ticketRoute);
 app.use("/api/v1/testimonials", testimonialRoute);
 app.use("/api/v1/recent-shows", recentShowRoute);
 app.use("/api/v1/app-settings", appSettingsRoute);
+app.use("/api/v1/event-album", eventAlbumRoute);
 
 app.get("/", (req, res) => {
   res.status(404).json({ error: "Not Found" });
