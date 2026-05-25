@@ -137,6 +137,7 @@ class StorageService {
         Key: objectName,
         Body: imageBuffer,
         ContentType: 'image/png',
+        CacheControl: 'public, max-age=31536000, immutable',
       })
     );
     return objectName;
@@ -150,6 +151,7 @@ class StorageService {
           Key: objectName,
           Body: buffer,
           ContentType: contentType,
+          CacheControl: 'public, max-age=31536000, immutable',
         })
       );
       return objectName;
@@ -170,6 +172,7 @@ class StorageService {
           Body: stream,
           ContentType: contentType,
           ContentLength: size,
+          CacheControl: 'public, max-age=31536000, immutable',
         })
       );
       return objectName;
@@ -188,6 +191,7 @@ class StorageService {
           Key: objectName,
           Body: buffer,
           ContentType: 'image/jpeg',
+          CacheControl: 'public, max-age=31536000, immutable',
           Metadata: { usage: 'banner' },
         })
       );

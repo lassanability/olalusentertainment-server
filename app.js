@@ -42,6 +42,7 @@ const testimonialRoute = require("./routes/testimonial");
 const recentShowRoute = require("./routes/recentShow");
 const appSettingsRoute = require("./routes/appSettings");
 const eventAlbumRoute = require("./routes/eventAlbum");
+const manualTicketRoute = require("./routes/manualTicket");
 
 connectDB().then(() => initSuperAdmin());
 
@@ -88,6 +89,7 @@ app.use("/api/v1/testimonials", testimonialRoute);
 app.use("/api/v1/recent-shows", recentShowRoute);
 app.use("/api/v1/app-settings", appSettingsRoute);
 app.use("/api/v1/event-album", eventAlbumRoute);
+app.use("/api/v1/manual-tickets", manualTicketRoute);
 
 app.get("/", (req, res) => {
   res.status(404).json({ error: "Not Found" });
