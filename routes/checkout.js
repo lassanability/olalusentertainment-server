@@ -5,5 +5,6 @@ const { requireAuth } = require('../middleware/auth');
 router.post('/', ctrl.processPayment);
 router.get('/orders', requireAuth, ctrl.getAllOrders);
 router.get('/order/:orderId', ctrl.getOrderStatus);
+router.delete('/orders/:orderId', requireAuth, ctrl.deleteOrder);
 
 module.exports = router;

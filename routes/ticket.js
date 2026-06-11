@@ -8,5 +8,6 @@ router.get('/:ticketId/public', ctrl.getPublicTicket);
 router.get('/:ticketId', requireAuth, ctrl.getTicket);
 router.post('/:ticketId/scan', requireAuth, ctrl.scanTicket);
 router.post('/:ticketId/void', requireAuth, ctrl.voidTicket);
+router.delete('/:ticketId', requireAuth, ctrl.deleteTicket);
 
 module.exports = router;

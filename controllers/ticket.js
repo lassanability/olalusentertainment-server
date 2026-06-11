@@ -119,6 +119,16 @@ exports.voidTicket = async (req, res) => {
   }
 };
 
+exports.deleteTicket = async (req, res) => {
+  try {
+    const ticket = await IssuedTicket.findOneAndDelete({ ticketId: req.params.ticketId });
+    if (!ticket) return res.status(404).json({ success: false, message: 'Ticket not found' });
+    res.json({ success: true, message: 'Ticket deleted' });
+  } catch {
+    res.status(500).json({ success: false, message: 'Failed to delete ticket' });
+  }
+};
+
 exports.scanTicket = async (req, res) => {
   try {
     const ticket = await IssuedTicket.findOne({ ticketId: req.params.ticketId })

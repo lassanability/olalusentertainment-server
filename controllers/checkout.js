@@ -113,3 +113,15 @@ exports.getAllOrders = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch orders' });
   }
 };
+
+exports.deleteOrder = async (req, res) => {
+  try {
+    const IssuedTicket = require('../models/IssuedTicket');
+    const order = await Order.findOneAndDelete({ orderId: req.params.orderId });
+    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+    await IssuedTicket.deleteMany({ orderId: req.params.orderId });
+    res.json({ success: true, message: 'Order and associated tickets deleted' });
+  } catch {
+    res.status(500).json({ success: false, message: 'Failed to delete order' });
+  }
+};
