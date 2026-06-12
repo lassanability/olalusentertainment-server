@@ -129,18 +129,6 @@ exports.remove = async (req, res) => {
   }
 };
 
-exports.getUpcoming = async (req, res) => {
-  try {
-    const events = await Event.find({
-      startDateTime: { $gte: new Date() },
-      $or: [{ postedBy: 'admin' }, { postedBy: 'user', listingPaid: true }],
-    }).sort({ startDateTime: 1 }).limit(8);
-    res.json({ success: true, events });
-  } catch {
-    res.status(500).json({ success: false, message: 'Failed to fetch upcoming events' });
-  }
-};
-
 exports.getPast = async (req, res) => {
   try {
     const filter = {
