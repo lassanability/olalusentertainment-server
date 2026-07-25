@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-    "prod": "NODE_ENV=production node --no-deprecation app.js"
+    "prod": "NODE_ENV=production node --no-deprecation app.js",
+    "import-guestlist": "node scripts/importGuestlist.js"
   },
   "keywords": [
     "healthcare",
@@ -52,6 +53,7 @@
     "sharp": "^0.33.5",
     "square": "^44.0.1",
     "uuid": "^13.0.0",
+    "xlsx": "^0.18.5",
     "xss-clean": "^0.1.4"
   },
   "overrides": {
