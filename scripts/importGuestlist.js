@@ -38,15 +38,6 @@ const slugify = (s) => (
     .replace(/(^-|-$)/g, '')
 ) || 'guest';
 
-function isPaidCell(value) {
-  if (value === null || value === undefined) return false;
-  if (typeof value === 'number') return value > 0;
-  const text = String(value).replace(/\s+/g, ' ').trim().toUpperCase();
-  if (!text) return false;
-  if (text.includes('PENDING')) return false;
-  return text.includes('PAID');
-}
-
 function findHeaderRow(rows) {
   for (let i = 0; i < rows.length; i++) {
     const cell = rows[i] && rows[i][0];
@@ -111,7 +102,6 @@ async function run() {
     const seenInFile = new Set();
     const summary = [];
     let skippedBlank = 0;
-    let skippedUnpaid = 0;
     let skippedDupFile = 0;
     let skippedDupDb = 0;
     let created = 0;
@@ -119,11 +109,9 @@ async function run() {
     for (const row of dataRows) {
       const rawName = row[0];
       const table = row[2] ? String(row[2]).trim() : '';
-      const paidCell = row[3];
 
       const name = normalizeName(rawName);
       if (!name) { skippedBlank++; continue; }
-      if (!isPaidCell(paidCell)) { skippedUnpaid++; continue; }
       if (seenInFile.has(name)) { skippedDupFile++; continue; }
       seenInFile.add(name);
       if (existingNames.has(name)) { skippedDupDb++; continue; }
@@ -180,7 +168,6 @@ async function run() {
     console.log('---');
     console.log(`Rows read:           ${dataRows.length}`);
     console.log(`Blank name skipped:  ${skippedBlank}`);
-    console.log(`Not marked paid:     ${skippedUnpaid}`);
     console.log(`Duplicate in file:   ${skippedDupFile}`);
     console.log(`Already imported:    ${skippedDupDb}`);
     console.log(`${opts.dryRun ? 'Would create' : 'Created'}:         ${created}`);
