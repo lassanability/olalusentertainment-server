@@ -1,7 +1,6 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const fs = require('fs');
 const path = require('path');
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 const XLSX = require('xlsx');
 const QRCode = require('qrcode');
@@ -28,8 +27,6 @@ function parseArgs() {
   }
   return opts;
 }
-
-const normalizeName = (s) => String(s || '').replace(/\s+/g, ' ').trim().toUpperCase();
 
 const slugify = (s) => (
   String(s || '')
@@ -93,32 +90,29 @@ async function run() {
     if (headerIdx === -1) throw new Error('Could not find header row (expected a column starting with "ATTENDEES")');
     const dataRows = rows.slice(headerIdx + 1);
 
-    const existingTickets = await IssuedTicket.find({ eventId: event._id }).select('buyerName');
-    const existingNames = new Set(existingTickets.map((t) => normalizeName(t.buyerName)));
-
     const outDir = opts.out || path.join(__dirname, 'output', slugify(event.title));
     if (!opts.dryRun) fs.mkdirSync(outDir, { recursive: true });
 
-    const seenInFile = new Set();
     const summary = [];
     let skippedBlank = 0;
-    let skippedDupFile = 0;
     let skippedDupDb = 0;
     let created = 0;
 
-    for (const row of dataRows) {
+    for (let i = 0; i < dataRows.length; i++) {
+      const row = dataRows[i];
       const rawName = row[0];
       const table = row[2] ? String(row[2]).trim() : '';
 
-      const name = normalizeName(rawName);
-      if (!name) { skippedBlank++; continue; }
-      if (seenInFile.has(name)) { skippedDupFile++; continue; }
-      seenInFile.add(name);
-      if (existingNames.has(name)) { skippedDupDb++; continue; }
+      const displayName = String(rawName || '').replace(/\s+/g, ' ').trim();
+      if (!displayName) { skippedBlank++; continue; }
 
-      const displayName = String(rawName).replace(/\s+/g, ' ').trim();
+      // Names repeat across rows for genuinely different people (couples, groups,
+      // companies reusing one label), so dedup can't be name-based. Each sheet row
+      // is one paid seat; a stable per-row order ID makes reruns idempotent instead.
+      const orderId = `olalus-guestlist-row-${i}`;
+      if (await Order.exists({ orderId })) { skippedDupDb++; continue; }
+
       const ticketTypeName = table ? `Guestlist (${table})` : 'Guestlist';
-      const orderId = `olalus-guestlist-${crypto.randomBytes(4).toString('hex')}`;
 
       let ticketId = null;
 
@@ -168,7 +162,6 @@ async function run() {
     console.log('---');
     console.log(`Rows read:           ${dataRows.length}`);
     console.log(`Blank name skipped:  ${skippedBlank}`);
-    console.log(`Duplicate in file:   ${skippedDupFile}`);
     console.log(`Already imported:    ${skippedDupDb}`);
     console.log(`${opts.dryRun ? 'Would create' : 'Created'}:         ${created}`);
     if (!opts.dryRun) console.log(`QR codes + summary CSV written to: ${outDir}`);
