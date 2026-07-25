@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
     "prod": "NODE_ENV=production node --no-deprecation app.js",
-    "import-guestlist": "node scripts/importGuestlist.js"
+    "import-guestlist": "node scripts/importGuestlist.js",
+    "remove-guestlist-imports": "node scripts/removeGuestlistImports.js"
   },
   "keywords": [
     "healthcare",
